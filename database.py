@@ -47,13 +47,13 @@ class NewsRepository():
         response = []
         query = """
             SELECT 
-                c._id,
-                c.created_at,
-                c.news
-            FROM category c
-            WHERE c.category = %s
-            GROUP BY c._id, c.news->'url_path' 
-            ORDER BY c._id DESC
+                n._id,
+                n.created_at,
+                n.news
+            FROM news n
+            WHERE n.category = %s
+            GROUP BY n._id, n.news->'url_path' 
+            ORDER BY n._id DESC
             OFFSET %s FETCH NEXT %s ROW ONLY
         """
         self.cursor.execute(query, [category, offset, limit])
