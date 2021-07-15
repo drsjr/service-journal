@@ -11,7 +11,7 @@ from passlib.context import CryptContext
 
 SECRET_KEY = "752b3f39e938f67f65de56f2500f5eadddc1443f04ccaa"
 ALGO = "HS256"
-ACCESS_TOKE_EXPIRE_MINUTES = 10
+ACCESS_TOKE_EXPIRE_MINUTES = 59
 
 repo = UserRepository(Database())
 
