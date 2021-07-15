@@ -5,11 +5,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from model import Token, User
 
 import auth
-import json
 
 app = FastAPI()
-
-
 
 #####################################
 #   Authentication Section          #

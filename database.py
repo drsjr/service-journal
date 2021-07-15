@@ -91,9 +91,9 @@ class CategoryRepository():
                 _id,
                 "name",
                 path,
-                code
-            FROM category WHERE
-            is_enable = true
+                code,
+                is_enable
+            FROM category
         """
         self.cursor.execute(query, [])
         result = self.cursor.fetchall()
@@ -103,7 +103,8 @@ class CategoryRepository():
                     id=obj[0], 
                     name=obj[1], 
                     path=obj[2], 
-                    code=obj[3])
+                    code=obj[3],
+                    is_enable=obj[4])
                 )
 
         return response

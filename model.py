@@ -33,3 +33,4 @@ class Category(BaseModel):
     name: str
     path: str
     code: int
+    is_enable: bool
