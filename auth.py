@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from database import Database, UserRepository, NewsRepository, CategoryRepository
 from typing import List, Optional
+from error import ApiError
+
 
 from model import TokenData, User, UserInDB
 
@@ -59,9 +61,12 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credential",
-        headers={"WWW-Authenticate": "Bearer"}
-    )
+        detail=ApiError(
+                code=status.HTTP_401_UNAUTHORIZED, 
+                message="invalide access", 
+                short="credential_expired").dict(),
+        headers={"WWW-Authenticate": "Bearer"})
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGO])
         username: str = payload.get("sub")
@@ -78,17 +83,29 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
     if current_user.disabled:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive User")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail=ApiError(code=status.HTTP_400_BAD_REQUEST, message="User Inactive", short="user_inactive").dict())
     return current_user
 
 
 
 async def get_new_by_category(category: str, offset: int, limit: int):
     if offset < 0 or limit < 0 or limit > 10:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="value parameter invalid")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail=ApiError(
+                code=status.HTTP_400_BAD_REQUEST, 
+                message="invalid values from offset or limit", 
+                short="new_by_category_parameter_invalid").dict())
 
     if category not in categories:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="category doesn't exist")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail=ApiError(
+                code=status.HTTP_400_BAD_REQUEST, 
+                message="category doesn't exist", 
+                short="new_by_category_parameter_invalid").dict())
 
     return news_repo.get_query_category_pagination(category=category, offset=offset,  limit=limit)
 

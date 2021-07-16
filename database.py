@@ -1,5 +1,4 @@
 
-import os
 from typing import List
 from model import News, User, Category
 import psycopg2

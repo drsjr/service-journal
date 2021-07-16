@@ -1,5 +1,6 @@
 
 from fastapi import Depends, FastAPI, HTTPException, status
+from error import ApiError
 from datetime import timedelta
 from fastapi.security import OAuth2PasswordRequestForm
 from model import Token, User
@@ -18,7 +19,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail=ApiError(
+                code=status.HTTP_401_UNAUTHORIZED, 
+                message="username or password invalide", 
+                short="incorrect_credential").dict(),
             headers={"WWW-Authenticate": "Bearer"}
         )
     
