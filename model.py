@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
 
 class User(BaseModel):
@@ -34,3 +34,9 @@ class Category(BaseModel):
     path: str
     code: int
     is_enable: bool
+
+class FrontPage(BaseModel):
+    main: News
+    carrossel: List[News]
+    column: List[News]
+

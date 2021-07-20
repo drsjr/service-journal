@@ -1,6 +1,8 @@
 
 from typing import List
-from model import News, User, Category
+
+from starlette import responses
+from model import News, User, Category, Carrossel, FrontPage
 import psycopg2
 
 class Database():
@@ -38,7 +40,7 @@ class UserRepository():
 
 class NewsRepository():
 
-    def __init__(self, db: Database) -> List[News]:
+    def __init__(self, db: Database):
         self.cursor = db.connection.cursor()
 
 
@@ -79,7 +81,7 @@ class NewsRepository():
 
 class CategoryRepository():
 
-    def __init__(self, db: Database) -> List[News]:
+    def __init__(self, db: Database):
         self.cursor = db.connection.cursor()
 
 
@@ -95,8 +97,15 @@ class CategoryRepository():
             FROM category
         """
         self.cursor.execute(query, [])
+
         result = self.cursor.fetchall()
         for obj in result:
+            print(obj[0], 
+                    obj[1], 
+                    obj[2], 
+                    obj[3],
+                    obj[4], "\n---------------------------------------------------------------------------------------------------")
+
             response.append(
                 Category(
                     id=obj[0], 
@@ -107,6 +116,55 @@ class CategoryRepository():
                 )
 
         return response
+
+
+class FrontPageRepository():
+
+    def __init__(self, db: Database):
+        self.cursor = db.connection.cursor()
+
+
+    def get_last_front_page(self):
+        query = """
+            SELECT 
+                * 
+            FROM principal 
+            ORDER BY _id DESC LIMIT 1
+        """
+        self.cursor.execute(query, [])
+        result = self.cursor.fetchone()[2]
+        
+        main = News(id=0, 
+                        url_path=result['main_news']["link"], 
+                        title=result['main_news']["title"], 
+                        subtitle=result['main_news']["subtitle"], 
+                        url_image="", 
+                        time="", 
+                        category="")
+
+        carrossel = []
+        for o in result['carrossel']:
+            carrossel.append(Carrossel(id=0,
+                url_path=o['link'], 
+                title="", 
+                subtitle=o['subtitle'], 
+                url_image=o['image_linke'], 
+                time="", 
+                category=""))
+
+        column = []
+        for o in result['column_news']:
+            column.append(News(id=0, 
+                url_path=o['link'], 
+                title=o['link'], 
+                subtitle=o['subtitle'], 
+                url_image="", 
+                time="", 
+                category=""))
+
+        response = FrontPage(main=main, carrossel=carrossel, column=column)
+        return response
+        
 
     
 

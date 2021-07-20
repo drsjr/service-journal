@@ -47,5 +47,6 @@ async def news(category: str = 'ultimas', offset: int = 0, limit: int = 5, curre
 async def news(current_user: User = Depends(auth.get_current_active_user)):
     return await auth.get_categories()
 
-
-
+@app.get("/principal")
+async def news(current_user: User = Depends(auth.get_current_active_user)):
+    return await auth.get_front_page()

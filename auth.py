@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-from database import Database, UserRepository, NewsRepository, CategoryRepository
-from typing import List, Optional
+from database import Database, UserRepository, NewsRepository, CategoryRepository, FrontPageRepository
+from typing import Optional
 from error import ApiError
 
 
@@ -16,10 +16,9 @@ ALGO = "HS256"
 ACCESS_TOKE_EXPIRE_MINUTES = 59
 
 repo = UserRepository(Database())
-
 news_repo = NewsRepository(Database())
-
 category_repo = CategoryRepository(Database())
+front_repo = FrontPageRepository(Database())
 
 
 categories = [ 'ultimas', 'jundiai', 'opiniao', 'politica', 'economia', 'policia', 'esportes', 'cultura', 'hype'] 
@@ -111,6 +110,9 @@ async def get_new_by_category(category: str, offset: int, limit: int):
 
 async def get_categories():
     return category_repo.get_all_categories()
+
+async def get_front_page():
+    return front_repo.get_last_front_page()
 
 
 
