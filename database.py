@@ -144,7 +144,7 @@ class FrontPageRepository():
 
         carrossel = []
         for o in result['carrossel']:
-            carrossel.append(Carrossel(id=0,
+            carrossel.append(News(id=0,
                 url_path=o['link'], 
                 title="", 
                 subtitle=o['subtitle'], 
