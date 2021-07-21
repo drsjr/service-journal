@@ -2,7 +2,7 @@
 from typing import List
 
 from starlette import responses
-from model import News, User, Category, Carrossel, FrontPage
+from model import News, User, Category, FrontPage
 import psycopg2
 
 class Database():
