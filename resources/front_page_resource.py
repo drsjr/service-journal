@@ -1,0 +1,4 @@
+
+
+class FrontPageResource():
+    pass
