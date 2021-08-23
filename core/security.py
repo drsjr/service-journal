@@ -1,12 +1,8 @@
-from fastapi import Depends, FastAPI, HTTPException, status
 from datetime import datetime, timedelta
 from typing import Any, Union
 
-from jose import JWTError, jwt
+from jose import jwt
 from passlib.context import CryptContext
-
-from model.token_model import TokenData
-from model.error_model import ApiError
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
