@@ -12,10 +12,10 @@ class Database():
 
     def __init__(self):
         self.connection = psycopg2.connect(
-            host='192.168.15.35',
+            host='172.17.0.2',
             user='folha',
             password='folha',
-            dbname='database_jj',
+            dbname='journal_jj',
             port=5432)
 
 #class NewsRepository():
@@ -55,44 +55,6 @@ class Database():
 #                    subtitle=obj[2]["news_subtitle"], 
 #                    time=obj[2]["news_time"], 
 #                    category=category)
-#                )
-#
-#        return response
-
-#class CategoryRepository():
-#
-#    def __init__(self, db: Database):
-#        self.cursor = db.connection.cursor()
-#
-#
-#    def get_all_categories(self):
-#        response = []
-#        query = """
-#            SELECT 
-#                _id,
-#                "name",
-#                path,
-#                code,
-#                is_enable
-#            FROM category
-#        """
-#        self.cursor.execute(query, [])
-#
-#        result = self.cursor.fetchall()
-#        for obj in result:
-#            print(obj[0], 
-#                    obj[1], 
-#                    obj[2], 
-#                    obj[3],
-#                    obj[4], "\n---------------------------------------------------------------------------------------------------")
-#
-#            response.append(
-#                Category(
-#                    id=obj[0], 
-#                    name=obj[1], 
-#                    path=obj[2], 
-#                    code=obj[3],
-#                    is_enable=obj[4])
 #                )
 #
 #        return response
