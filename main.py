@@ -5,17 +5,21 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 
+from model.news_model import FrontPage
 from model.error_model import ApiError
 from model.user_model import User, UserInfo
 from model.token_model import Token
 from model.category_model import Category
 
+
 from resources.user_resource import UserResource
 from resources.category_resource import CategoryResource
+from resources.front_page_resource import FrontPageResource
 
 
 user_resource = UserResource()
 category_resource = CategoryResource()
+front_page_resource = FrontPageResource()
 
 
 app = FastAPI()
@@ -44,6 +48,10 @@ async def user_info(current_user: User = Depends(get_current_active_user)):
         updated_at=current_user.updated_at)
 
 
+#####################################
+#   Category Section                #
+#####################################
+
 @app.get("/category", response_model=List[Category])
 async def user_info(current_user: User = Depends(get_current_active_user)) -> List[Category]:
     return category_resource.get_all_categories()
@@ -52,5 +60,14 @@ async def user_info(current_user: User = Depends(get_current_active_user)) -> Li
 @app.get("/category/id/{id}", response_model=Category)
 async def user_info(id: int, current_user: User = Depends(get_current_active_user)):
     return category_resource.get_category_by_id(id)
+
+
+#####################################
+#   Front Page Section              #
+#####################################
+
+@app.get("/frontpage", response_model=FrontPage)
+async def user_info(current_user: User = Depends(get_current_active_user)):
+    return front_page_resource.get_front_page()
 
 
