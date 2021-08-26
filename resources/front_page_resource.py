@@ -1,5 +1,3 @@
-
-
 from model.news_model import FrontPage
 from repository.database import Database
 from repository.news_repository import NewsRepository

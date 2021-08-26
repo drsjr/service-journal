@@ -10,8 +10,10 @@ from model.error_model import ApiError
 from model.user_model import User, UserInfo
 from model.token_model import Token
 from model.category_model import Category
+from model.paragraph_model import Paragraph
 
 
+from resources.article_resource import ArticleResource
 from resources.user_resource import UserResource
 from resources.category_resource import CategoryResource
 from resources.front_page_resource import FrontPageResource
@@ -20,6 +22,7 @@ from resources.front_page_resource import FrontPageResource
 user_resource = UserResource()
 category_resource = CategoryResource()
 front_page_resource = FrontPageResource()
+article_resource = ArticleResource()
 
 
 app = FastAPI()
@@ -70,4 +73,10 @@ async def user_info(id: int, current_user: User = Depends(get_current_active_use
 async def user_info(current_user: User = Depends(get_current_active_user)):
     return front_page_resource.get_front_page()
 
+#####################################
+#   Article Section                 #
+#####################################
 
+@app.get("/article/paragraphs/{article_id}", response_model=List[Paragraph])
+async def user_info(article_id: int, current_user: User = Depends(get_current_active_user)):
+    return article_resource.get_paragraphs(article_id)

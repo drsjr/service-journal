@@ -1,9 +1,11 @@
 FROM python:3.7
 
-RUN pip install fastapi uvicorn
+EXPOSE 8000
 
-EXPOSE 80
+COPY . /app
 
-COPY ./app /app
+WORKDIR /app
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
