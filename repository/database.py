@@ -1,4 +1,5 @@
 import psycopg2
+import os
 
 class Database():
 
@@ -12,11 +13,11 @@ class Database():
 
     def __init__(self):
         self.connection = psycopg2.connect(
-            host='172.17.0.2',
-            user='folha',
-            password='folha',
-            dbname='journal_jj',
-            port=5432)
+            host=os.getenv('DT_HOST'),
+            user=os.getenv('DT_USER'),
+            password=os.getenv('DT_PASS'),
+            dbname=os.getenv('DT_NAME'),
+            port=os.getenv('DT_PORT'))
 
 #class NewsRepository():
 #
