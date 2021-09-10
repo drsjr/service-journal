@@ -60,7 +60,7 @@ async def user_info(current_user: User = Depends(get_current_active_user)) -> Li
     return category_resource.get_all_categories()
 
 
-@app.get("/category/id/{id}", response_model=Category)
+@app.get("/category/{id}", response_model=Category)
 async def user_info(id: int, current_user: User = Depends(get_current_active_user)):
     return category_resource.get_category_by_id(id)
 
@@ -77,6 +77,6 @@ async def user_info(current_user: User = Depends(get_current_active_user)):
 #   Article Section                 #
 #####################################
 
-@app.get("/article/paragraphs/{article_id}", response_model=List[Paragraph])
+@app.get("/article/{article_id}/paragraphs", response_model=List[Paragraph])
 async def user_info(article_id: int, current_user: User = Depends(get_current_active_user)):
     return article_resource.get_paragraphs(article_id)
