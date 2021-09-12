@@ -91,6 +91,22 @@ QUERY_CANSADA = """
         WHERE t.front_page_id = %s;
     """
 
+QUERY_NEWS_BY_CATEGORY = """
+        SELECT 
+            ar.id,
+            ar.url,
+            ar.title,
+            ar.subtitle,
+            ar.image,
+            ar.category_id,
+            ar.created_at
+        FROM article ar
+        INNER JOIN category ca ON ca.id = ar.category_id
+        WHERE ar.category_id = %s
+        ORDER BY id DESC
+        LIMIT 10;
+    """
+
 
 class NewsRepository():
 
@@ -112,6 +128,25 @@ class NewsRepository():
                 category=result[5], 
                 created_at=result[6])  
 
+    
+    def get_news_by_category(self, category_id: int):
+        self.cursor.execute(QUERY_NEWS_BY_CATEGORY, [category_id])
+        result = self.cursor.fetchall()
+
+        news_by_category = []
+
+        for news in result:
+            news_by_category.append(
+                News(id=news[0], 
+                    url=news[1], 
+                    title=news[2], 
+                    subtitle=news[3], 
+                    image=news[4], 
+                    category=news[5], 
+                    created_at=str(news[6])
+                )
+            )
+        return news_by_category
     
     def get_last_front_page(self) -> FrontPage:
         self.cursor.execute(QUERY_FRONT_PAGE, [])

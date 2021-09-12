@@ -5,7 +5,7 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 
-from model.news_model import FrontPage
+from model.news_model import FrontPage, News
 from model.error_model import ApiError
 from model.user_model import User, UserInfo
 from model.token_model import Token
@@ -66,12 +66,16 @@ async def user_info(id: int, current_user: User = Depends(get_current_active_use
 
 
 #####################################
-#   Front Page Section              #
+#   News Section                    #
 #####################################
 
 @app.get("/frontpage", response_model=FrontPage)
 async def user_info(current_user: User = Depends(get_current_active_user)):
     return front_page_resource.get_front_page()
+
+@app.get("/news/category/{category_id}", response_model=List[News])
+async def user_info(category_id: int, current_user: User = Depends(get_current_active_user)):
+    return front_page_resource.get_news_by_category(category_id)
 
 #####################################
 #   Article Section                 #

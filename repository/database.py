@@ -1,6 +1,13 @@
 import psycopg2
 import os
 
+POSTGRES_PORT = 5432
+POSTGRES_USERNAME = "folha"
+POSTGRES_PASSWORD = "folha"
+POSTGRES_DBNAME = "journal_jj"
+POSTGRES_HOSTNAME = "172.17.0.2"
+
+
 class Database():
 
     _instances = {}
@@ -18,4 +25,9 @@ class Database():
             password=os.getenv('DT_PASS'),
             dbname=os.getenv('DT_NAME'),
             port=os.getenv('DT_PORT'))
-            
+
+            #host=POSTGRES_HOSTNAME, 
+            #user=POSTGRES_USERNAME, 
+            #password=POSTGRES_PASSWORD, 
+            #dbname=POSTGRES_DBNAME,
+            #port=POSTGRES_PORT)
