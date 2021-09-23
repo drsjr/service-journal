@@ -1,6 +1,13 @@
 from repository.database import Database
 from model.news_model import News, FrontPage
 
+
+FRONT_TYPES = [
+    ("main", "news_main"), 
+    ("carrossel", "news_carrossel"), 
+    ("column", "news_column"), 
+    ("other", "news_other")]
+
 QUERY_NEWS_BY_ID = """
         SELECT
             a.id,
@@ -35,20 +42,9 @@ QUERY_PAGINATION = """
         OFFSET %s FETCH NEXT %s ROW ONLY
     """
 
-QUERY_CANSADA = """
-        SELECT 
-            t.is_from,
-            t.id,
-            t.url,
-            t.title,
-            t.subtitle,
-            t.image,
-            t.category_id,
-            t.created_at,
-            t.front_page_id
-        FROM (
+QUERY_FRONT_PAGE_TABLES = """
             SELECT
-                'main' AS is_from,
+                '{0}' AS is_from,
                 ar.id,
                 ar.url,
                 ar.title,
@@ -58,37 +54,9 @@ QUERY_CANSADA = """
                 ar.created_at,
                 fp.id AS front_page_id
             FROM front_page fp
-            INNER JOIN news_main n ON n.front_page_id = fp.id
+            INNER JOIN {1} n ON n.front_page_id = fp.id
             INNER JOIN article ar ON n.article_id = ar.id
-            UNION
-            SELECT 
-                'carrossel' AS is_from,
-                ar.id,
-                ar.url,
-                ar.title,
-                ar.subtitle,
-                ar.image,
-                ar.category_id,
-                ar.created_at,
-                fp.id AS front_page_id
-            FROM front_page fp
-            INNER JOIN news_carrossel n ON n.front_page_id = fp.id
-            INNER JOIN article ar ON n.article_id = ar.id
-            UNION
-            SELECT 
-                'column' AS is_from,
-                ar.id,
-                ar.url,
-                ar.title,
-                ar.subtitle,
-                ar.image,
-                ar.category_id,
-                ar.created_at,
-                fp.id AS front_page_id
-            FROM front_page fp
-            INNER JOIN news_column n ON n.front_page_id = fp.id
-            INNER JOIN article ar ON n.article_id = ar.id) AS t
-        WHERE t.front_page_id = %s;
+            WHERE n.front_page_id = {2};
     """
 
 QUERY_NEWS_BY_CATEGORY = """
@@ -159,39 +127,35 @@ class NewsRepository():
             id=result[0],
             carrossel=[],
             column=[],
+            other=[],
             created_at=str(result[1])) 
 
-        self.cursor.execute(QUERY_CANSADA, [front_page.id])
+        front_page.main = self.query_front_by_type(FRONT_TYPES[0][0], FRONT_TYPES[0][1], front_page.id)[0]
+        front_page.carrossel = self.query_front_by_type(FRONT_TYPES[1][0], FRONT_TYPES[1][1], front_page.id)
+        front_page.column = self.query_front_by_type(FRONT_TYPES[2][0], FRONT_TYPES[2][1], front_page.id)
+        front_page.other = self.query_front_by_type(FRONT_TYPES[3][0], FRONT_TYPES[3][1], front_page.id)
+
+        return front_page
+
+    def query_front_by_type(self, column: str, table: str, front_page_id):
+        response = []
+        query = QUERY_FRONT_PAGE_TABLES.format(column, table, front_page_id)
+        self.cursor.execute(query, [])
         result = self.cursor.fetchall()
 
         for news in result:
+            response.append(
+                News(id=news[1], 
+                    url=news[2], 
+                    title=news[3], 
+                    subtitle=news[4], 
+                    image=news[5], 
+                    category=news[6], 
+                    created_at=str(news[7])
+                    )
+            )
 
-            if news[0] == 'main':
-                front_page.main = News(id=news[1], 
-                                            url=news[2], 
-                                            title=news[3], 
-                                            subtitle=news[4], 
-                                            image=news[5], 
-                                            category=news[6], 
-                                            created_at=str(news[7]))
-
-            elif news[0] == 'carrossel':
-                front_page.carrossel.append(News(id=news[1], 
-                                            url=news[2], 
-                                            title=news[3], 
-                                            subtitle=news[4], 
-                                            image=news[5], 
-                                            category=news[6], 
-                                            created_at=str(news[7])))
-            else:
-                front_page.column.append(News(id=news[1], 
-                                            url=news[2], 
-                                            title=news[3], 
-                                            subtitle=news[4], 
-                                            image=news[5], 
-                                            category=news[6], 
-                                            created_at=str(news[7])))
+        return response
             
-        return front_page
 
-        
+         

@@ -15,4 +15,5 @@ class FrontPage(BaseModel):
     main: Optional[News]
     carrossel: Optional[List[News]]
     column: Optional[List[News]]
+    other: Optional[List[News]]
     created_at: str
