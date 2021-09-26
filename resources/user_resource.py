@@ -25,10 +25,10 @@ class UserResource():
         user: User = self.repository.get_query_by_email(email=email)
 
         if not user:
-            raise error.http_401_incorrect_email_or_password()
+            raise error.http_422_incorrect_email_or_password()
 
         if security.verify_password(password, user.password) is False:
-            raise error.http_401_incorrect_email_or_password()
+            raise error.http_422_incorrect_email_or_password()
         
         access_token_expires = timedelta(minutes=security.ACCESS_TOKEN_EXPIRE_MINUTES)
         token_access = security.create_access_token(user.email, expires_delta=access_token_expires)
