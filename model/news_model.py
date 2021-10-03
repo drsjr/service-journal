@@ -1,4 +1,3 @@
-from typing import List, Optional
 from pydantic import BaseModel
 
 class News(BaseModel):
@@ -9,11 +8,3 @@ class News(BaseModel):
     subtitle: str
     image: str
     category: int
-
-class FrontPage(BaseModel):
-    id: int
-    main: Optional[News]
-    carrossel: Optional[List[News]]
-    column: Optional[List[News]]
-    other: Optional[List[News]]
-    created_at: str

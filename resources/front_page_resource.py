@@ -1,17 +1,18 @@
 from typing import List
-from model.news_model import FrontPage, News
+from model.front_page_model import FrontPage, FrontPageNews
+from repository.front_page_repository import FrontPageRepository
 from repository.database import Database
-from repository.news_repository import NewsRepository
 
 
 class FrontPageResource():
 
     def __init__(self) -> None:
-        self.repository = NewsRepository(Database())
+        self.front_page = FrontPageRepository(Database())
 
 
-    def get_front_page(self) -> FrontPage:
-        return self.repository.get_last_front_page()
+    def get_front_page_update(self) -> FrontPage:
+        return self.front_page.get_front_page_update()
 
-    def get_news_by_category(self, category_id: int) -> List[News]:
-        return self.repository.get_news_by_category(category_id)
+
+    def get_front_page(self) -> FrontPageNews:
+        return self.front_page.get_front_page_with_article_id()

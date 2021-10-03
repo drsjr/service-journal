@@ -5,12 +5,13 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 
-from model.news_model import FrontPage, News
+from model.news_model import News
 from model.error_model import ApiError
 from model.user_model import User, UserInfo
 from model.token_model import Token
 from model.category_model import Category
 from model.paragraph_model import Paragraph
+from model.front_page_model import FrontPageNews, FrontPage
 
 
 from resources.article_resource import ArticleResource
@@ -42,6 +43,7 @@ async def get_current_active_user(current_user: User = Depends(user_resource.get
 async def login_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     return user_resource.authenticate_user(form_data.username, form_data.password)
 
+
 @app.get("/users/me/", response_model=UserInfo)
 async def user_info(current_user: User = Depends(get_current_active_user)):
     return UserInfo(
@@ -66,14 +68,29 @@ async def user_info(id: int, current_user: User = Depends(get_current_active_use
 
 
 #####################################
-#   News Section                    #
+#   Front Page Section              #
 #####################################
 
-@app.get("/frontpage", response_model=FrontPage)
+@app.get("/frontpage/update", response_model=FrontPage)
+async def user_info(current_user: User = Depends(get_current_active_user)):
+    return front_page_resource.get_front_page_update()
+
+
+@app.get("/frontpage", response_model=FrontPageNews)
 async def user_info(current_user: User = Depends(get_current_active_user)):
     return front_page_resource.get_front_page()
 
+
+#####################################
+#   News Section                    #
+#####################################
+
 @app.get("/news/category/{category_id}", response_model=List[News])
+async def user_info(category_id: int, current_user: User = Depends(get_current_active_user)):
+    return front_page_resource.get_news_by_category(category_id)
+
+
+@app.get("/news/{article_id}", response_model=News)
 async def user_info(category_id: int, current_user: User = Depends(get_current_active_user)):
     return front_page_resource.get_news_by_category(category_id)
 
