@@ -14,19 +14,6 @@ QUERY_NEWS_BY_ID = """
         WHERE a.id = %s;
     """
 
-QUERY_PAGINATION = """
-
-        SELECT 
-            n._id,
-            n.created_at,
-            n.news
-        FROM news n
-        WHERE n.category = {0}
-        GROUP BY n._id, n.news->'url_path' 
-        ORDER BY n._id DESC
-        OFFSET {1} FETCH NEXT {2} ROW ONLY
-    """
-
 QUERY_NEWS_BY_CATEGORY = """
         SELECT 
             ar.id,
@@ -40,7 +27,7 @@ QUERY_NEWS_BY_CATEGORY = """
         INNER JOIN category ca ON ca.id = ar.category_id
         WHERE ar.category_id = %s
         ORDER BY id DESC
-        OFFSET {1} FETCH NEXT {2} ROW ONLY
+        OFFSET %s FETCH NEXT %s ROW ONLY
     """
 
 
@@ -65,8 +52,8 @@ class NewsRepository():
                 created_at=result[6])  
 
     
-    def get_news_by_category(self, category_id: int):
-        self.cursor.execute(QUERY_NEWS_BY_CATEGORY, [category_id])
+    def get_news_by_category(self, category_id: int, offset: int, limit: int):
+        self.cursor.execute(QUERY_NEWS_BY_CATEGORY, [category_id, offset, limit])
         result = self.cursor.fetchall()
 
         news_by_category = []

@@ -1,8 +1,10 @@
 
-from typing import List
+from typing import List, Optional
+from fastapi.param_functions import Query
 from starlette import status
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from starlette.datastructures import QueryParams
 
 
 from model.news_model import News
@@ -14,6 +16,7 @@ from model.paragraph_model import Paragraph
 from model.front_page_model import FrontPageNews, FrontPage
 
 
+from resources.news_resource import NewsResource
 from resources.article_resource import ArticleResource
 from resources.user_resource import UserResource
 from resources.category_resource import CategoryResource
@@ -23,6 +26,7 @@ from resources.front_page_resource import FrontPageResource
 user_resource = UserResource()
 category_resource = CategoryResource()
 front_page_resource = FrontPageResource()
+news_resource = NewsResource()
 article_resource = ArticleResource()
 
 
@@ -86,13 +90,13 @@ async def user_info(current_user: User = Depends(get_current_active_user)):
 #####################################
 
 @app.get("/news/category/{category_id}", response_model=List[News])
-async def user_info(category_id: int, current_user: User = Depends(get_current_active_user)):
-    return front_page_resource.get_news_by_category(category_id)
+async def user_info(
+    category_id: int, 
+    offset: int = Query(0), 
+    limit: int = Query(10), 
+    current_user: User = Depends(get_current_active_user)):
+    return news_resource.get_news_by_category_id(category_id, offset, limit)
 
-
-@app.get("/news/{article_id}", response_model=News)
-async def user_info(category_id: int, current_user: User = Depends(get_current_active_user)):
-    return front_page_resource.get_news_by_category(category_id)
 
 #####################################
 #   Article Section                 #
