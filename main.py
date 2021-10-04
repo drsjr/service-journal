@@ -62,13 +62,13 @@ async def user_info(current_user: User = Depends(get_current_active_user)):
 #####################################
 
 @app.get("/category", response_model=List[Category])
-async def user_info(current_user: User = Depends(get_current_active_user)) -> List[Category]:
+async def category_list(current_user: User = Depends(get_current_active_user)) -> List[Category]:
     return category_resource.get_all_categories()
 
 
-@app.get("/category/{id}", response_model=Category)
-async def user_info(id: int, current_user: User = Depends(get_current_active_user)):
-    return category_resource.get_category_by_id(id)
+@app.get("/category/{category_id}", response_model=Category)
+async def category_by_id(category_id: int, current_user: User = Depends(get_current_active_user)):
+    return category_resource.get_category_by_id(category_id)
 
 
 #####################################
@@ -76,12 +76,12 @@ async def user_info(id: int, current_user: User = Depends(get_current_active_use
 #####################################
 
 @app.get("/frontpage/update", response_model=FrontPage)
-async def user_info(current_user: User = Depends(get_current_active_user)):
+async def front_page_update(current_user: User = Depends(get_current_active_user)):
     return front_page_resource.get_front_page_update()
 
 
 @app.get("/frontpage", response_model=FrontPageNews)
-async def user_info(current_user: User = Depends(get_current_active_user)):
+async def front_page(current_user: User = Depends(get_current_active_user)):
     return front_page_resource.get_front_page()
 
 
@@ -90,7 +90,7 @@ async def user_info(current_user: User = Depends(get_current_active_user)):
 #####################################
 
 @app.get("/news/category/{category_id}", response_model=List[News])
-async def user_info(
+async def news_by_category(
     category_id: int, 
     offset: int = Query(0), 
     limit: int = Query(10), 
@@ -98,10 +98,15 @@ async def user_info(
     return news_resource.get_news_by_category_id(category_id, offset, limit)
 
 
+@app.get("/news/{article_id}", response_model=News)
+async def news_by_article_id(article_id: int, current_user: User = Depends(get_current_active_user)):
+    return news_resource.get_news_by_article_id(article_id)
+
+
 #####################################
 #   Article Section                 #
 #####################################
 
 @app.get("/article/{article_id}/paragraphs", response_model=List[Paragraph])
-async def user_info(article_id: int, current_user: User = Depends(get_current_active_user)):
+async def paragraphs_by_article_id(article_id: int, current_user: User = Depends(get_current_active_user)):
     return article_resource.get_paragraphs(article_id)

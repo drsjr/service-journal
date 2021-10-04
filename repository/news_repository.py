@@ -11,7 +11,8 @@ QUERY_NEWS_BY_ID = """
             a.category_id,
             a.created_at
         FROM article a
-        WHERE a.id = %s;
+        WHERE a.id = %s
+        LIMIT 1;
     """
 
 QUERY_NEWS_BY_CATEGORY = """
@@ -36,9 +37,11 @@ class NewsRepository():
     def __init__(self, db: Database):
         self.cursor = db.connection.cursor()
 
-    def get_news_by_id(self, id: int) -> News:
-        self.cursor.execute(QUERY_NEWS_BY_ID, [id])
+    def get_news_by_id(self, article_id: int) -> News:
+        self.cursor.execute(QUERY_NEWS_BY_ID, [article_id])
         result = self.cursor.fetchone()
+
+        print(result)
 
         if result is None:
             return None
@@ -49,7 +52,7 @@ class NewsRepository():
                 subtitle=result[3], 
                 image=result[4], 
                 category=result[5], 
-                created_at=result[6])  
+                created_at=str(result[6]))  
 
     
     def get_news_by_category(self, category_id: int, offset: int, limit: int):
