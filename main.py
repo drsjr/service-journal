@@ -82,7 +82,7 @@ async def front_page_update(current_user: User = Depends(get_current_active_user
 
 @app.get("/frontpage", response_model=FrontPageNews)
 async def front_page(current_user: User = Depends(get_current_active_user)):
-    return front_page_resource.get_front_page()
+    return front_page_resource.get_front_page_with_news()
 
 
 #####################################
